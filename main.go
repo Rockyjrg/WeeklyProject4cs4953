@@ -1,6 +1,8 @@
 package main
 
 import (
+	"math/rand/v2"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -13,10 +15,17 @@ func main() {
 
 	//pipe variables
 	var pipeX float32 = 700
-	var topPipeY float32 = 0
-	var bottomPipeY float32 = 300
-	var pipeHeight float32 = 100
 	var pipeWidth float32 = 40
+	var pipeSpeed float32 = 100
+	var gapHeight float32 = 120 //space between top and bottom pipes
+
+	//initial pipe heights
+	var topPipeHeight float32 = float32(rand.IntN(200) + 50)
+	var bottomPipeY float32 = topPipeHeight + gapHeight
+	var bottomPipeHeight float32 = 400 - bottomPipeY
+
+	//intersecting variable
+	//var intersecting bool
 
 	//point counter variables
 	//var pointCounter int = 0
@@ -37,10 +46,22 @@ func main() {
 		//player rectangle
 		rl.DrawRectangle(int32(playerX), int32(playerY), int32(playerSize), int32(playerSize), rl.Blue)
 
-		//bottom pipe rectangle
-		rl.DrawRectangle(int32(pipeX), int32(bottomPipeY), int32(pipeWidth), int32(pipeHeight), rl.Green)
 		//top pipe rectangle
-		rl.DrawRectangle(int32(pipeX), int32(topPipeY), int32(pipeWidth), int32(pipeHeight), rl.Green)
+		rl.DrawRectangle(int32(pipeX), 0, int32(pipeWidth), int32(topPipeHeight), rl.Green)
+		//bottom pipe rectangle
+		rl.DrawRectangle(int32(pipeX), int32(bottomPipeY), int32(pipeWidth), int32(bottomPipeHeight), rl.Green)
+
+		//if pipe goes past left border of the screen respawn on the right
+		pipeX -= pipeSpeed * rl.GetFrameTime()
+
+		if pipeX < -pipeWidth {
+			pipeX = 800
+			topPipeHeight = float32(rand.IntN(200) + 50)
+			bottomPipeY = topPipeHeight + gapHeight
+			bottomPipeHeight = 400 - bottomPipeY
+		}
+
+		//set up a way to randomize the heights of each pipe on each turn
 
 		//character movement + blocking going outside window
 		if rl.IsKeyDown(rl.KeyW) && playerY > 0 {
