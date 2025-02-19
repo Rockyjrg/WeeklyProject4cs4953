@@ -43,7 +43,7 @@ func main() {
 		rl.BeginDrawing()
 
 		rl.ClearBackground(rl.RayWhite)
-		rl.DrawText("Current Points: "+fmt.Sprintf("%d", score), 10, 10, 25, rl.Black)
+		rl.DrawText("Points: "+fmt.Sprintf("%d", score), 10, 10, 25, rl.Black)
 
 		if gameOver {
 			rl.DrawText("Game over! Press R to Restart", 250, 150, 20, rl.Red)
