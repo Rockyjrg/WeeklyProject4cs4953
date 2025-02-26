@@ -12,7 +12,12 @@ func main() {
 	var playerX float32 = 100
 	var playerY float32 = 100
 	var playerSize float32 = 40
-	var playerSpeed float32 = 170
+	//	var playerSpeed float32 = 170
+
+	//physics variables
+	var playerVelocity float32 = 100
+	var gravity float32 = 500
+	var jumpStrength float32 = -200
 
 	//pipe variables
 	var pipeX float32 = 700
@@ -39,6 +44,7 @@ func main() {
 
 	rl.SetTargetFPS(60)
 
+	//start game
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
 
@@ -78,11 +84,20 @@ func main() {
 			}
 
 			//character movement + blocking going outside window
-			if rl.IsKeyDown(rl.KeyW) && playerY > 0 {
-				playerY -= playerSpeed * rl.GetFrameTime()
+			//TODO: Change movement to "jump" with the space key
+			if rl.IsKeyPressed(rl.KeySpace) && playerY > 0 {
+				// playerY -= playerSpeed * rl.GetFrameTime()
+				playerVelocity = jumpStrength
 			}
-			if rl.IsKeyDown(rl.KeyS) && playerY < 400-playerSize {
-				playerY += playerSpeed * rl.GetFrameTime()
+			// if rl.IsKeyDown(rl.KeyS) && playerY < 400-playerSize {
+			// 	playerY += playerSpeed * rl.GetFrameTime()
+			// }
+
+			//prevent player from falling off screen
+			if playerY > 400-playerSize {
+				playerY = 400 - playerSize
+				playerVelocity = 0
+				gameOver = true
 			}
 
 			//player rectangle
@@ -92,6 +107,10 @@ func main() {
 			rl.DrawRectangle(int32(pipeX), 0, int32(pipeWidth), int32(topPipeHeight), rl.Green)
 			//bottom pipe rectangle
 			rl.DrawRectangle(int32(pipeX), int32(bottomPipeY), int32(pipeWidth), int32(bottomPipeHeight), rl.Green)
+
+			playerVelocity += gravity * rl.GetFrameTime()
+
+			playerY += playerVelocity * rl.GetFrameTime()
 
 			//if pipe goes past left border of the screen respawn on the right
 			pipeX -= pipeSpeed * rl.GetFrameTime()
